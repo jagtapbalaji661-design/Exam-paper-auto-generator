@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exam Generator</title>
+
+<style>
+body{
+  font-family:Arial;
+  margin:0;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+}
+.container{
+  width:60%;
+  margin:auto;
+  background:#fff;
+  padding:25px;
+  margin-top:60px;
+  border-radius:15px;
+  box-shadow:0 15px 30px rgba(0,0,0,.3);
+  text-align:center;
+}
+button{
+  padding:10px 20px;
+  margin:8px;
+  border:none;
+  border-radius:6px;
+  background:#667eea;
+  color:#fff;
+  cursor:pointer;
+}
+button:hover{background:#5a67d8;}
+#timer{color:red;font-size:20px;margin-top:10px;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Exam Generator</h1>
+
+<select id="topic">
+<option value="math">Math</option>
+<option value="chemistry">Chemistry</option>
+<option value="history">History</option>
+<option value="geography">Geography</option>
+</select><br><br>
+
+<input type="number" id="num" value="5" max="120"><br><br>
+<input type="number" id="time" value="10"><br><br>
+
+<button onclick="startExam()">Start</button>
+
+<div id="timer"></div>
+<div id="output"></div>
+</div>
+
+<script>
+let qList=[],i=0,timer,timeLeft=0;
+
+// QUESTION BANK
+const bank={
+
+history:[
+"What is the importance of studying history?",
+"Explain sources of history.",
+"What is historiography?",
+"Describe Harappan civilization features.",
+"Explain Vedic society.",
+"What were Mahajanapadas?",
+"Role of Mauryan Empire in Indian history.",
+"Ashoka’s Dhamma – explain.",
+"Features of Gupta period.",
+"What is feudalism?"
+],
+
+chemistry:[
+"Define mole concept.",
+"What is atomic mass?",
+"Explain laws of chemical combination.",
+"Structure of atom – explain.",
+"What are isotopes and isobars?",
+"Quantum numbers – define.",
+"Periodic table trends.",
+"What is chemical bonding?",
+"Ionic vs covalent bond.",
+"VSEPR theory."
+],
+
+geography:[
+"What is geography?",
+"Branches of geography.",
+"Origin of Earth.",
+"Structure of Earth.",
+"Rocks – types.",
+"Earthquakes – causes.",
+"Volcanoes – types.",
+"Weather vs climate.",
+"Atmosphere layers.",
+"Greenhouse effect."
+],
+
+math:[
+"What is a set?",
+"Types of sets?",
+"Venn diagrams?",
+"Relations and functions?",
+"Domain and range?",
+"Types of functions?",
+"Trigonometric ratios?",
+"Trigonometric identities?",
+"Quadratic equations?",
+"Sequence and series?"
+]
+
+};
+
+// GENERATE QUESTION
+function genQ(topic){
+ let list=bank[topic];
+ return list[Math.floor(Math.random()*list.length)];
+}
+
+function startExam(){
+ let topic=document.getElementById("topic").value;
+ let n=parseInt(document.getElementById("num").value);
+ let t=parseInt(document.getElementById("time").value);
+
+ qList=[];
+
+ for(let j=0;j<n;j++) qList.push(genQ(topic));
+
+ i=0;
+ showQ(t);
+}
+
+function showQ(t){
+ if(i>=qList.length){
+   document.getElementById("output").innerHTML=
+   `<h2>Exam Finished</h2>`;
+   document.getElementById("timer").innerHTML="";
+   return;
+ }
+
+ let q=qList[i];
+ let html=`<h3>Q${i+1}: ${q}</h3>`;
+
+ // NEXT BUTTON
+ html+=`<button onclick="nextQ(${t})">Next</button>`;
+
+ document.getElementById("output").innerHTML=html;
+
+ timeLeft=t;
+ updateTimer();
+ clearInterval(timer);
+
+ timer=setInterval(()=>{
+   timeLeft--;
+   updateTimer();
+   if(timeLeft<=0){nextQ(t)}
+ },1000);
+}
+
+function nextQ(t){
+ i++;
+ showQ(t);
+}
+
+function updateTimer(){
+ document.getElementById("timer").innerHTML=`⏱ ${timeLeft}s`;
+}
+</script>
+
+</body>
+</html>
